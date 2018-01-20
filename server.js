@@ -26,7 +26,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(express.static('public'))
 app.use(cors({
-    origin: CLIENT_ORIGIN
+    origin: "https://young-eyrie-40144.herokuapp.com/"
 }))
 app.use(passport.initialize());
 app.use(passport.session());
