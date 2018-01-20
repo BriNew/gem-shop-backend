@@ -26,7 +26,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(express.static('public'))
 app.use(cors({
-    origin: 'http://localhost:3000'
+    origin: 'https://git.heroku.com/young-eyrie-40144.git'
 }))
 app.use(passport.initialize());
 app.use(passport.session());
