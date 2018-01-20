@@ -26,7 +26,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(express.static('public'))
 app.use(cors({
-    origin: CLIENT_ORIGIN
+    origin: 'http://localhost:3000'
 }))
 app.use(passport.initialize());
 app.use(passport.session());
