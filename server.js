@@ -36,9 +36,6 @@ jwtOptions.jwtFromRequest =  ExtractJwt.fromAuthHeaderAsBearerToken ();
 jwtOptions.secretOrKey = 'tasmanianDevil';
 
 var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
-  console.log('payload received', jwt_payload);
-  // usually this would be a database call:
-  // var user = users[_.findIndex(users, {id: jwt_payload.id})];
   Users.findOne({ id: jwt_payload._id }, function(err, user) {
   	if (user) {
     next(null, user);
@@ -47,11 +44,6 @@ var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
   }
 
   })
-  // if (user) {
-  //   next(null, user);
-  // } else {
-  //   next(null, false);
-  // }
 });
 
 passport.use(strategy);
@@ -81,8 +73,6 @@ app.get('/rocks/:id', (req, res) => {
 
 
 app.get("/rocks", passport.authenticate('jwt', { session: false }), function(req, res){
-	// res.json("Success! You can not see this without a token");
-	console.log('page is', req.query.page);
 	const pageNumber = req.query.page || 1;
 	const filters = {};
 	const queryableFields = ['type', 'origin', 'size', 'color'];
@@ -93,7 +83,6 @@ app.get("/rocks", passport.authenticate('jwt', { session: false }), function(req
 	});
 	RocksInventory
 		.paginate(filters, { page: pageNumber, limit: 16}, function(error, result) {
-		console.log(result);
 		res.json({
 				rocks: result.docs.map(
 					(term) => term.apiRepr())
@@ -103,7 +92,6 @@ app.get("/rocks", passport.authenticate('jwt', { session: false }), function(req
 });
 
 app.get("/users", function(req, res){
-	console.log('page is', req.query.page);
 	const pageNumber = req.query.page || 1;
 	const filters = {};
 	const queryableFields = ['username'];
@@ -114,7 +102,6 @@ app.get("/users", function(req, res){
 	});
 	Users
 		.paginate(filters, { page: pageNumber, limit: 16}, function(error, result) {
-		console.log(result);
 		res.json({
 				users: result.docs.map(
 					(user) => user.apiRepr())
@@ -126,7 +113,6 @@ app.get("/users", function(req, res){
 
 
 app.post('/rocks', (req, res) => {
-	console.log(req.body);
 	const requiredFields = ['type', 'origin', 'size', 'color'];
 	for (let i=0; i<requiredFields.length; i++) {
 		const field = requiredFields[i];
@@ -151,53 +137,13 @@ app.post('/rocks', (req, res) => {
 		});
 });
 
-// app.post('/contact', (req, res) => {
-// 	let {name, email, message} = req.body;
-// 	console.log(name, email, message);
-// 	console.log(req.body);
-// 	console.log('hi from contact');
-// })
-// nodemailer.createTestAccount((err, account) => {
-// 	let transporter = nodemailer.createTransport({
-// 	service: 'gmail',
-// 	port: 25,
-// 	secure: false, 
-// 	auth:{
-// 		user: 'thisIsMyTestEmailForTesting@gmail.com',
-// 		pass: 'thisismytestpass'
-// 	},
-// 	tls: {
-// 		rejectUnauthorized: false
-// 	}
-// });
-// 	let mailOptions = {
-// 		from: '"Bri New" <thisIsMyTestEmailForTesting@gmail.com>',
-// 		to: 'briannewell@fastmail.com',
-// 		subject: 'Hello, world!', 
-// 		text: 'EMAIL!',
-// 		html: '<b>Email</b>'
-// 	};
-// 	transporter.sendMail(mailOptions, (error, info) => {
-// 	if(error){
-// 		return console.log(error);
-// 	}
-// 	console.log('Message sent: %s', info.messageId);
-// 	console.log('Preview URL: %s', nodemailer.getTestMessageURL(info));
-// })
-// })
-
-
 app.post('/contact', (req, res) => {
 	let {name, email, subject, message} = req.body;
-	console.log(name, email, subject, message);
-	console.log(req.body);
-	console.log('hi from contact');
 	const requiredFields = ['name', 'email', 'subject', 'message'];
 	for (let i=0; i<requiredFields.length; i++) {
 		const field = requiredFields[i];
 		if (!(field in req.body)) {
 			const message = `Missing \`${field}\` in request body`
-			console.error(message);
 			return res.status(400).send(message);
 		}
 	}
@@ -215,12 +161,6 @@ app.post('/contact', (req, res) => {
 			res.status(500).json({message: 'Internal server error'});
 		});
 	let transporter = nodemailer.createTransport({
-	// host: 'smtp.ethereal.email',
- //    	port: 587,
- //    	auth: {
- //        	user: 'zgh3ekilvqq2ato7@ethereal.email',
- //        	pass: 'ypEMW2HENDSAe8rww1'
-	// 		}
 	service: 'gmail',
 	port: 25,
 	secure: false, 
@@ -232,7 +172,6 @@ app.post('/contact', (req, res) => {
 		rejectUnauthorized: false
 	}
 });
-	console.log("name", name);
 	let mailOptions = {
 		from: `${name} <${email}>`,
 		to: 'thisIsMyTestEmailForTesting@gmail.com',
@@ -244,15 +183,12 @@ app.post('/contact', (req, res) => {
 	if(error){
 		return console.log(error);
 	}
-	console.log('Message sent: %s', info.messageId);
-	console.log('Preview URL: %s', nodemailer.getTestMessageURL(info));
 })
 });
 
 
 
 app.post('/users', (req, res) => {
-	console.log(req.body);
 	const requiredFields = ['username', 'password'];
 	for (let i=0; i<requiredFields.length; i++) {
 		const field = requiredFields[i];
@@ -278,10 +214,6 @@ app.post('/users', (req, res) => {
 		});
 });
 
-// app.get("/rocks", passport.authenticate('jwt', { session: false }), function(req, res){
-//   res.json("Success! You can not see this without a token");
-// });
-
 app.post('/login',
   passport.authenticate('local', { successRedirect: '/',
                                    failureRedirect: '/login',
@@ -291,32 +223,21 @@ app.post('/login',
 app.post('/signin', (req, res) => {
 	let {username, password} = req.body;
 	if(username && password) {
-		// console.log('signing in');
 		Users.findOne({ username: username }, function(err, user) {
-      // if (err) { return done(err); }
       if (!user) {
         return res.status(401).send('This user does not exist');
       }
       if (user.validPassword(password)) {
-      	console.log('password match');
       	var payload = {id: user.id};
-      	console.log(payload);
       	var token = jwt.sign(payload, jwtOptions.secretOrKey, { expiresIn: '1d' });
-
       	res.json({token: token})
-      	console.log(token);
-        // return done(null, false, { message: 'Incorrect credentials.' });
       }
       else {
       	return res.status(401).send('Incorrect password');
       }
-
-      // return done(null, user);
     });
 	}
 });
-// {exp: Math.floor(Date.now() / 1000) - 30 },
-
 
 passport.use(new LocalStrategy(
   function(id, password, done) {
@@ -332,8 +253,6 @@ passport.use(new LocalStrategy(
     });
   }
 ));
-
-
 
 app.put('/rocks/:id', (req, res) => {
 	if (req.params.id !== req.body.id) {
@@ -415,8 +334,6 @@ if (require.main === module) {
   runServer().catch(err => console.error(err));
 };
 
-
 module.exports = {app, runServer, closeServer};
 
 
-// "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVhNDUzNmRjZDlhYzI1MzkyY2FlZWY0NSIsImlhdCI6MTUxNDkyMjQ3Nn0.crfVdeShEgNqEFsKLwAdzSEpBn0J_br26XZWkqy8dZo"
