@@ -1,10 +1,12 @@
-### gem-shop-back-end
+### Chapman's Gem Shop - back end
+https://young-eyrie-40144.herokuapp.com/
+
 This is the back end code for Chapman's Gem & Mineral Shop. The client wanted a site with a simple, modern feel, 
 immediately communicating necessary information to potential customers passing through the area, nothing more. 
 For my own practice, I included a system to register and authorize users to manipulate an inventory. This system
 will be left out of the version given to Chapman's.
  
-![image](https://github.com/BriNew/gem-shop-backend/blob/master/gem_shop_inv.png)
+![image](https://user-images.githubusercontent.com/24151430/38323326-8840a3b0-3802-11e8-9dc8-e6e87cb65f21.png)
 
 ### Summary
 This app has purpose for the shop's customers, and for the employees. Being visible from HWY 101 in the midst of 
